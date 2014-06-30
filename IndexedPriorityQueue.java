@@ -3,7 +3,15 @@ package basicAlgorithm;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * 
+ * @ClassName:     IndexedPriorityQueue.java
+ * @Description:   Implements an IndexedPriorityQueue, maintaining indecies for the queue.
+ * 
+ * @author         UncleLee
+ * @version        V1.0  
+ * @Date           2014-6-30 ÉÏÎç08:28:33
+ */
 public class IndexedPriorityQueue<T> {
 	private int size;
 	private Tuple<T>[] pq;
@@ -19,7 +27,15 @@ public class IndexedPriorityQueue<T> {
 		}
 
 	}
-	
+	/**
+	 * 
+	 * @Title:        change 
+	 * @Description:  Change the value of the obj specified by the index param. 
+	 * @param:        @param index
+	 * @param:        @param val    
+	 * @return:       void    
+	 * @throws 
+	 */
 	@SuppressWarnings("unchecked")
 	public void change(int index, T val){
 		int i = table.get(index);
@@ -32,7 +48,15 @@ public class IndexedPriorityQueue<T> {
 		else
 			swim(i);
 	}
-	
+	/**
+	 * 
+	 * @Title:        contains 
+	 * @Description:  Check if there exists the obj specified by the index param. 
+	 * @param:        @param index
+	 * @param:        @return    
+	 * @return:       boolean    
+	 * @throws 
+	 */
 	public boolean contains(int index){
 		return table.containsKey(index);
 	}
@@ -66,6 +90,15 @@ public class IndexedPriorityQueue<T> {
 		return size < 1;
 	}
 	
+	/**
+	 * 
+	 * @Title:        insert 
+	 * @Description:  Insert obj to the priority queue, should be paired with an index. 
+	 * @param:        @param index
+	 * @param:        @param item    
+	 * @return:       void    
+	 * @throws 
+	 */
 	public void insert(int index, T item){
 		size++;
 		Tuple<T> one = new Tuple<T>(index, item);
@@ -75,6 +108,14 @@ public class IndexedPriorityQueue<T> {
 		swim(size);
 	}
 	
+	/**
+	 * 
+	 * @Title:        delMin 
+	 * @Description:  Delete the head of the queue. 
+	 * @param:        @return    
+	 * @return:       T    
+	 * @throws 
+	 */
 	public T delMin(){
 		T res = pq[1].val;
 		table.remove(pq[1].index);
