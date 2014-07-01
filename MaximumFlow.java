@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * 
+ * @ClassName:     MaximumFlow.java
+ * @Description:   Implement Ford-Fulkerson algorithm for contest purpose;
+ * 
+ * @author         UncleLee
+ * @version        V1.0  
+ * @Date           2014-7-1 ÏÂÎç08:11:05
+ */
 public class MaximumFlow {
 	class FlowEdge{
 		public int v;
@@ -41,18 +50,23 @@ public class MaximumFlow {
 	public ArrayList<FlowEdge>[] adjList;
 	public FlowEdge[] edgeTo;
 	
+	/**
+	 * 
+	 * @Title:        readGraph 
+	 * @Description:  Construct the graph. 
+	 * @param:        @throws Exception    
+	 * @return:       void    
+	 * @throws 
+	 */
 	@SuppressWarnings("unchecked")
 	public void readGraph() throws Exception{
 		Reader.init(System.in);
 		N = Reader.nextInt();
 		M = Reader.nextInt();
-		S = Reader.nextInt();
-		T = Reader.nextInt();
 		this.adjList = new ArrayList[N];
 		for(int i=0;i<N;i++)
 			this.adjList[i] = new ArrayList<FlowEdge>();
 		this.edgeTo = new FlowEdge[N];
-		this.edgeTo[S] = new FlowEdge(-1,S,0,0);
 		for(int i=0;i<M;i++){
 			FlowEdge curr = new FlowEdge(Reader.nextInt(),Reader.nextInt(),0,Reader.nextInt());
 			this.adjList[curr.v].add(curr);
@@ -60,6 +74,14 @@ public class MaximumFlow {
 		}
 	}
 	
+	/**
+	 * 
+	 * @Title:        hasResidualPath 
+	 * @Description:  Check that if the network still has residual path. 
+	 * @param:        @return    
+	 * @return:       boolean    
+	 * @throws 
+	 */
 	public boolean hasResidualPath(){
 		boolean[] marked = new boolean[N];
 		Queue<Integer> q = new LinkedList<Integer>();
@@ -83,22 +105,33 @@ public class MaximumFlow {
 	}
 	
 	public int maxFlows;
-	public void FordFulkerson(){
+	/**
+	 * 
+	 * @Title:        FordFulkerson 
+	 * @Description:  Run the algorithm to calculate maximum flow. 
+	 * @param:        @param S
+	 * @param:        @param T    
+	 * @return:       void    
+	 * @throws 
+	 */
+	public void FordFulkerson(int S, int T){
+		this.S = S;
+		this.T = T;
+		this.edgeTo[S] = new FlowEdge(-1,S,0,0);
 		maxFlows = 0;
 		while(hasResidualPath()){
 			int bottle = Integer.MAX_VALUE;
-			for(int p=T;p!=-1;p=edgeTo[p].other(p)){
+			for(int p=T;p!=S;p=edgeTo[p].other(p)){
 				FlowEdge curr = edgeTo[p];
 				int f = curr.residualTo(p);
 				if(f<bottle)
 					bottle = f;
 			}
-			for(int p=T;p!=-1;p=edgeTo[p].other(p)){
+			for(int p=T;p!=S;p=edgeTo[p].other(p)){
 				FlowEdge curr = edgeTo[p];
 				curr.addResidualTo(p, bottle);
 			}
 			maxFlows += bottle;
 		}
 	}
-	
 }
