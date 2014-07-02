@@ -1,6 +1,7 @@
 package basicAlgorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -19,13 +20,24 @@ public class MaximumFlow {
 		public int w;
 		public int flow;
 		public int capacity;
+		public int cost;
 		
 		public FlowEdge(int v, int w, int f, int c) {
 			this.v = v;
 			this.w = w;
 			this.flow = f;
 			this.capacity = c;
+			this.cost = 0;
 		}
+		
+		public FlowEdge(int v, int w, int f, int c, int co) {
+			this.v = v;
+			this.w = w;
+			this.flow = f;
+			this.capacity = c;
+			this.cost = co;
+		}
+		
 		public int other(int x){
 			return x == v?w:v;
 		}
@@ -117,7 +129,6 @@ public class MaximumFlow {
 	public void FordFulkerson(int S, int T){
 		this.S = S;
 		this.T = T;
-		this.edgeTo[S] = new FlowEdge(-1,S,0,0);
 		maxFlows = 0;
 		while(hasResidualPath()){
 			int bottle = Integer.MAX_VALUE;
@@ -132,6 +143,56 @@ public class MaximumFlow {
 				curr.addResidualTo(p, bottle);
 			}
 			maxFlows += bottle;
+		}
+	}
+	
+	public int minCosts;
+	public int[] costTo;
+	public boolean hasResidualMinCostPath(){
+		boolean[] marked = new boolean[N];
+		Arrays.fill(costTo, Integer.MAX_VALUE);
+		costTo[S] = 0;
+		Queue<Integer> q = new LinkedList<Integer>();
+		q.add(S);
+		while(!q.isEmpty()){
+			int curr = q.poll();
+			marked[curr] = false;
+			for(FlowEdge e:adjList[curr]){
+				int other = e.other(curr);
+				if(e.residualTo(other)>0&&(costTo[other]>costTo[curr]+e.cost)){
+					costTo[other] = costTo[curr]+e.cost;
+					edgeTo[other] = e;
+					if(marked[other])
+						continue;
+					marked[other] = true;
+					q.offer(other);
+				}
+			}
+		}
+		if(costTo[T]<Integer.MAX_VALUE)
+			return true;
+		return false;
+	}
+	
+	public void MinCostMaxFlow(int S, int T){
+		this.S = S;
+		this.T = T;
+		maxFlows = 0;
+		minCosts = 0;
+		while(hasResidualMinCostPath()){
+			int bottle = Integer.MAX_VALUE;
+			for(int p=T;p!=S;p=edgeTo[p].other(p)){
+				FlowEdge curr = edgeTo[p];
+				int f = curr.residualTo(p);
+				if(f<bottle)
+					bottle = f;
+			}
+			for(int p=T;p!=S;p=edgeTo[p].other(p)){
+				FlowEdge curr = edgeTo[p];
+				curr.addResidualTo(p, bottle);
+			}
+			maxFlows += bottle;
+			minCosts += bottle*costTo[T];
 		}
 	}
 }
