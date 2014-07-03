@@ -65,12 +65,11 @@ public class MaximumFlow {
 	/**
 	 * 
 	 * @Title:        readGraph 
-	 * @Description:  Construct the graph. 
+	 * @Description:  Construct the graph from stdio. 
 	 * @param:        @throws Exception    
 	 * @return:       void    
 	 * @throws 
 	 */
-	@SuppressWarnings("unchecked")
 	public void readGraph() throws Exception{
 		Reader.init(System.in);
 		N = Reader.nextInt();
@@ -84,6 +83,38 @@ public class MaximumFlow {
 			this.adjList[curr.v].add(curr);
 			this.adjList[curr.w].add(curr);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param N
+	 */
+	public MaximumFlow(int N){
+		this.N = N;
+		this.M = 0;
+		this.adjList = new ArrayList[N];
+		for(int i=0;i<N;i++)
+			this.adjList[i] = new ArrayList<FlowEdge>();
+		this.edgeTo = new FlowEdge[N];
+		this.costTo = new int[N];
+	}
+	
+	/**
+	 * 
+	 * @Title:        addEdge 
+	 * @Description:  Add an edge to the graph. 
+	 * @param:        @param from
+	 * @param:        @param to
+	 * @param:        @param capacity
+	 * @param:        @param cost    
+	 * @return:       void    
+	 * @throws 
+	 */
+	public void addEdge(int from, int to, int capacity, int cost){
+		FlowEdge curr = new FlowEdge(from, to ,0 , capacity, cost);
+		this.adjList[from].add(curr);
+		this.adjList[to].add(curr);
+		M += 1;
 	}
 	
 	/**
@@ -148,6 +179,14 @@ public class MaximumFlow {
 	
 	public int minCosts;
 	public int[] costTo;
+	/**
+	 * 
+	 * @Title:        hasResidualMinCostPath 
+	 * @Description:  Find the min cost path from residual network. 
+	 * @param:        @return    
+	 * @return:       boolean    
+	 * @throws 
+	 */
 	public boolean hasResidualMinCostPath(){
 		boolean[] marked = new boolean[N];
 		Arrays.fill(costTo, Integer.MAX_VALUE);
@@ -173,7 +212,15 @@ public class MaximumFlow {
 			return true;
 		return false;
 	}
-	
+	/**
+	 * 
+	 * @Title:        MinCostMaxFlow 
+	 * @Description:  Run the algorithm to calculate min cost maximum flow.  
+	 * @param:        @param S
+	 * @param:        @param T    
+	 * @return:       void    
+	 * @throws 
+	 */
 	public void MinCostMaxFlow(int S, int T){
 		this.S = S;
 		this.T = T;
@@ -194,5 +241,17 @@ public class MaximumFlow {
 			maxFlows += bottle;
 			minCosts += bottle*costTo[T];
 		}
+	}
+	
+	public static void main(String[] args) {
+		MaximumFlow mf = new MaximumFlow(4);
+		mf.addEdge(0, 1, 2, 2);
+		mf.addEdge(0, 2, 1, 5);
+		mf.addEdge(1, 2, 1, 2);
+		mf.addEdge(1, 3, 1, 3);
+		mf.addEdge(2, 3, 1, 1);
+		mf.MinCostMaxFlow(0, 3);
+		System.out.println(mf.minCosts);
+		System.out.println(mf.maxFlows);
 	}
 }
