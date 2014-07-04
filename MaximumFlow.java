@@ -38,6 +38,12 @@ public class MaximumFlow {
 			this.cost = co;
 		}
 		
+		public int getCost(int to){
+			if(to == w) return cost;
+			else if(to == v) return -cost;
+			else throw new RuntimeException("Inconsistent Edge!");
+		}
+		
 		public int other(int x){
 			return x == v?w:v;
 		}
@@ -198,8 +204,8 @@ public class MaximumFlow {
 			marked[curr] = false;
 			for(FlowEdge e:adjList[curr]){
 				int other = e.other(curr);
-				if(e.residualTo(other)>0&&(costTo[other]>costTo[curr]+e.cost)){
-					costTo[other] = costTo[curr]+e.cost;
+				if(e.residualTo(other)>0&&(costTo[other]>costTo[curr]+e.getCost(other))){
+					costTo[other] = costTo[curr]+e.getCost(other);
 					edgeTo[other] = e;
 					if(marked[other])
 						continue;
@@ -241,17 +247,5 @@ public class MaximumFlow {
 			maxFlows += bottle;
 			minCosts += bottle*costTo[T];
 		}
-	}
-	
-	public static void main(String[] args) {
-		MaximumFlow mf = new MaximumFlow(4);
-		mf.addEdge(0, 1, 2, 2);
-		mf.addEdge(0, 2, 1, 5);
-		mf.addEdge(1, 2, 1, 2);
-		mf.addEdge(1, 3, 1, 3);
-		mf.addEdge(2, 3, 1, 1);
-		mf.MinCostMaxFlow(0, 3);
-		System.out.println(mf.minCosts);
-		System.out.println(mf.maxFlows);
 	}
 }
