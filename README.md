@@ -1,4 +1,4 @@
-basicAlgorithm
+Basic Algorithms
 ==============
 
-implement some basic algorithms
+implement some basic algorithms for contest purpose.
